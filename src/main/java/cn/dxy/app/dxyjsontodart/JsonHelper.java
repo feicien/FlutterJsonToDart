@@ -11,29 +11,15 @@ import java.util.Map;
 public class JsonHelper {
 
 
-    public static String getFileName(String className) {
-        String fileName;
-
-        if (className.contains("_")) {
-            fileName = className.toLowerCase();
-        } else {
-            fileName = CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, className);
-        }
-
-        return fileName;
-    }
-
     /**
      * @param className   用户输入的类名
      * @param originalStr 用户输入的 json
      */
     public static String generateDartClassesToString(String className, String originalStr) {
 
-        String fileName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, className);
-
         Map<String, Map<String, Object>> map = new HashMap<>();
 
-        getAllModel(fileName, originalStr, map);
+        getAllModel(className, originalStr, map);
 
         StringBuilder sb = new StringBuilder();
 
@@ -44,17 +30,20 @@ public class JsonHelper {
 
         //生成
         return "import 'package:json_annotation/json_annotation.dart';\n" +
-                "\npart '" + getFileName(className) + ".g.dart';\n" +
+                "\npart '" + StringUtils.getFileName(className) + ".g.dart';\n" +
                 sb;
     }
 
     //处理内部类
-    private static void getAllModel(String fileName, String originalStr, Map<String, Map<String, Object>> map) {
+    private static void getAllModel(String className, String originalStr, Map<String, Map<String, Object>> map) {
+
+        String name = StringUtils.getClassName(className);
+
         JsonElement jsonElement = JsonParser.parseString(originalStr);
 
         if (jsonElement.isJsonObject()) {
             Map<String, Object> item = fromJsonToMap(originalStr);
-            map.put(fileName, item);
+            map.put(name, item);
 
             for (Map.Entry<String, Object> entry : item.entrySet()) {
                 //首字母大写
@@ -73,11 +62,13 @@ public class JsonHelper {
             JsonArray array = jsonElement.getAsJsonArray();
             JsonElement jsonElement1 = array.get(0);
 
-            getAllModel(fileName, jsonElement1.toString(), map);
+            getAllModel(name, jsonElement1.toString(), map);
         }
     }
 
-    private static String generateClassContent(String fileName, Map<String, Object> item) {
+    private static String generateClassContent(String fileName1, Map<String, Object> item) {
+
+        String fileName = StringUtils.getClassName(fileName1);
 
         StringBuilder sb = new StringBuilder();
 

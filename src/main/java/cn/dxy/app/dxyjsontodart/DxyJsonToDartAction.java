@@ -27,10 +27,11 @@ public class DxyJsonToDartAction extends AnAction {
         InputJsonDialog dialog = new InputJsonDialog();
         dialog.show();
 
-        String className = dialog.getClassName();
-        String json = dialog.getJson();
+        String inputClassName = dialog.getClassName();
+        String inputJsonStr = dialog.getJson();
 
-        String generatorClassContent = JsonHelper.generateDartClassesToString(className, json);
+        //TODO 需要对用户输入的类名，和 json 进行数据校验
+        String generatorClassContent = JsonHelper.generateDartClassesToString(inputClassName, inputJsonStr);
 
         PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
         Navigatable data = LangDataKeys.NAVIGATABLE.getData(event.getDataContext());
@@ -42,13 +43,16 @@ public class DxyJsonToDartAction extends AnAction {
             //添加 dart 文件
             ApplicationManager.getApplication().runWriteAction(() -> {
                 //文件名，小写，可以带下划线
-                String fileName = JsonHelper.getFileName(className);
+                String fileName = StringUtils.getFileName(inputClassName);
                 DartFile file = (DartFile) psiFileFactory.createFileFromText(fileName + ".dart", DartFileType.INSTANCE, generatorClassContent);
                 directory.add(file);
             });
         }, "DxyJsonToDart", "DxyJsonToDart");
 
         showNotify(project, "Dart Data Class file generated successful");
+
+        // 添加 json_serializable 依赖，并执行相关命令
+        CommandUtil.runFlutterPubRun(event);
 
     }
 
