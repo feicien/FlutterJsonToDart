@@ -15,7 +15,13 @@ intellij {
     version.set("2021.3")
     type.set("IC") // Target IDE Platform
 
-    plugins.set(listOf(/* Plugin Dependencies */))
+    plugins.set(
+        listOf(
+            //因为要生成 dart 文件，需要使用到 dart 插件中的类，所以这里要引入 dart 插件
+            "Dart:213.5744.122", //https://plugins.jetbrains.com/plugin/6351-dart/versions
+//            "io.flutter:63.2.4",//https://plugins.jetbrains.com/plugin/9212-flutter/versions/stable
+        )
+    )
 }
 
 tasks {
