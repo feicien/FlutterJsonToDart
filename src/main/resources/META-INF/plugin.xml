@@ -4,7 +4,7 @@
     <vendor email="chengh@dxy.cn" url="https://app.dxy.cn">DXY</vendor>
 
     <description><![CDATA[
-    <br>Launch the IDE and open plugin settings</br>
+    Launch the IDE and open plugin settings
     <br>Search for "DxyJsonToDart" and click install</br>
     <br>Open a flutter project, Right click on package -> New -> DxyJsonToDart</br>
     <br>Input className and JSON data into the Plugin Dialog</br>
@@ -15,7 +15,7 @@
     </description>
 
     <change-notes><![CDATA[
-       <br>Automatically generate dart model classes from JSON</br>
+       Automatically generate dart model classes from JSON
        <br>Automatically add json_serializable related dependencies in the pubspec.yaml file</br>
        <br>Automatically execute the command：flutter packages pub run build_runner build</br>
     ]]>
