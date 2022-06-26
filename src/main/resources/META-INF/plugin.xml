@@ -1,22 +1,25 @@
-<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <!-- Unique identifier of the plugin. It should be FQN. It cannot be changed between the plugin versions. -->
     <id>cn.dxy.app.DxyJsonToDart</id>
-
-    <!-- Public plugin name should be written in Title Case.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-name -->
     <name>DxyJsonToDart</name>
-
-    <!-- A displayed Vendor name or Organization ID displayed on the Plugins Page. -->
     <vendor email="chengh@dxy.cn" url="https://app.dxy.cn">DXY</vendor>
 
-    <!-- Description of the plugin displayed on the Plugin Page and IDE Plugin Manager.
-         Simple HTML elements (text formatting, paragraphs, and lists) can be added inside of <![CDATA[ ]]> tag.
-         Guidelines: https://plugins.jetbrains.com/docs/marketplace/plugin-overview-page.html#plugin-description -->
     <description><![CDATA[
-    把 json 文件生成 json_serializable dart 模型.<br>
-    然后自动运行 <em>flutter packages pub run build_runner build</em> 命令
-  ]]></description>
+    <br>Launch the IDE and open plugin settings</br>
+    <br>Search for "DxyJsonToDart" and click install</br>
+    <br>Open a flutter project, Right click on package -> New -> DxyJsonToDart</br>
+    <br>Input className and JSON data into the Plugin Dialog</br>
+    <br>The plugin will automatically add json_serializable related dependencies in the pubspec.yaml file</br>
+    <br>The plugin will automatically generate model classes</br>
+    <br>The plugin will automatically execute the command：flutter packages pub run build_runner build</br>
+    ]]>
+    </description>
+
+    <change-notes><![CDATA[
+       <br>Automatically generate dart model classes from JSON</br>
+       <br>Automatically add json_serializable related dependencies in the pubspec.yaml file</br>
+       <br>Automatically execute the command：flutter packages pub run build_runner build</br>
+    ]]>
+    </change-notes>
 
     <!-- Product and plugin compatibility requirements.
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html -->
@@ -32,7 +35,7 @@
     </extensions>
     <actions>
         <action id="DxyJsonToDart" class="cn.dxy.app.dxyjsontodart.DxyJsonToDartAction" text="DxyJsonToDart"
-                description="我是 description">
+                description="Generate dart bean class File from JSON">
             <add-to-group group-id="NewGroup" anchor="first"/>
         </action>
     </actions>

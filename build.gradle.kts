@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "cn.dxy.app"
-version = "1.0.1"
+version = "1.0.2"
 
 repositories {
     mavenCentral()
@@ -27,6 +27,11 @@ intellij {
 }
 
 tasks {
+
+    buildSearchableOptions {
+        enabled = false
+    }
+
     // Set the JVM compatibility versions
     withType<JavaCompile> {
         sourceCompatibility = "11"
