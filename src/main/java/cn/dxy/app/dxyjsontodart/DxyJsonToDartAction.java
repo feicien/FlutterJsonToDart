@@ -57,11 +57,10 @@ public class DxyJsonToDartAction extends AnAction {
     }
 
 
-    private void showNotify(Project project, String notifyMessage) {
-        NotificationGroup notificationGroup = new NotificationGroup("JSON to Dart Class", NotificationDisplayType.BALLOON, true);
-        ApplicationManager.getApplication().invokeLater(() -> {
-            Notification notification = notificationGroup.createNotification(notifyMessage, NotificationType.INFORMATION);
-            Notifications.Bus.notify(notification, project);
-        });
+    private void showNotify(Project project, String content) {
+        NotificationGroupManager.getInstance()
+                .getNotificationGroup("DXY Notification Group")
+                .createNotification(content, NotificationType.INFORMATION)
+                .notify(project);
     }
 }
