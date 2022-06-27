@@ -4,6 +4,8 @@
     <vendor email="chengh@dxy.cn" url="https://app.dxy.cn">DXY</vendor>
 
     <description><![CDATA[
+    The plugin can help you generate dart model needed for json_serializable from a JSON data and add json_serializable dependencies and run the <b>flutter pub run build_runner build -delete-conflicting-outputs</b> command. <br><br>
+    <b>Usage:</b><br>
     Launch the IDE and open plugin settings
     <br>Search for "DxyJsonToDart" and click install</br>
     <br>Open a flutter project, Right click on package -> New -> DxyJsonToDart</br>
