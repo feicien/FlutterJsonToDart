@@ -21,6 +21,15 @@ public class DxyJsonToDartAction extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
         Project project = event.getData(PlatformDataKeys.PROJECT);
+        if (project == null) {
+            return;
+        }
+
+        Navigatable data = LangDataKeys.NAVIGATABLE.getData(event.getDataContext());
+        if (data == null) {
+            return;
+        }
+        PsiDirectory directory = (PsiDirectory) data;
 
         //弹一个 dialog，用户可以输入 json
 
@@ -30,13 +39,15 @@ public class DxyJsonToDartAction extends AnAction {
         String inputClassName = dialog.getClassName();
         String inputJsonStr = dialog.getJson();
 
+        if (inputClassName == null || inputClassName.isEmpty()){
+            return;
+        }
+        if (inputJsonStr == null || inputJsonStr.isEmpty()) {
+            return;
+        }
         //TODO 需要对用户输入的类名，和 json 进行数据校验
         String generatorClassContent = JsonHelper.generateDartClassesToString(inputClassName, inputJsonStr);
 
-        PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
-        Navigatable data = LangDataKeys.NAVIGATABLE.getData(event.getDataContext());
-
-        PsiDirectory directory = (PsiDirectory) data;
 
 
         CommandProcessor.getInstance().executeCommand(project, () -> {
@@ -44,6 +55,7 @@ public class DxyJsonToDartAction extends AnAction {
             ApplicationManager.getApplication().runWriteAction(() -> {
                 //文件名，小写，可以带下划线
                 String fileName = StringUtils.getFileName(inputClassName);
+                PsiFileFactory psiFileFactory = PsiFileFactory.getInstance(project);
                 DartFile file = (DartFile) psiFileFactory.createFileFromText(fileName + ".dart", DartFileType.INSTANCE, generatorClassContent);
                 directory.add(file);
             });
@@ -52,7 +64,7 @@ public class DxyJsonToDartAction extends AnAction {
         showNotify(project, "Dart Data Class file generated successful");
 
         // 添加 json_serializable 依赖，并执行相关命令
-        CommandUtil.runFlutterPubRun(event);
+        CommandUtil.runFlutterPubRun(project);
 
     }
 
