@@ -4,14 +4,14 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
-import com.intellij.psi.PsiFile;
-import com.intellij.psi.search.FilenameIndex;
-import com.intellij.psi.search.GlobalSearchScope;
 import org.jetbrains.plugins.terminal.ShellTerminalWidget;
 import org.jetbrains.plugins.terminal.TerminalToolWindowFactory;
 import org.jetbrains.plugins.terminal.TerminalView;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -38,10 +38,9 @@ public class CommandUtil {
         boolean hasJsonSerializable = false;
         boolean hasBuildRunner = false;
 
-        PsiFile[] filesByName = FilenameIndex.getFilesByName(project, "pubspec.yaml", GlobalSearchScope.allScope(project));
-        if (filesByName.length > 0) {
-            PsiFile psiFile = filesByName[0];
-            String yaml = psiFile.getText();
+        try {
+            File file = new File(workingDirectory, "pubspec.yaml");
+            String yaml = Files.readString(Path.of(file.getPath()));
             List<FlutterDependencyBean> dependencies = YamlUtils.getDependencies(yaml);
 
             for (FlutterDependencyBean dependency : dependencies) {
@@ -55,6 +54,7 @@ public class CommandUtil {
                     hasBuildRunner = true;
                 }
             }
+        } catch (Exception ignored) {
         }
 
 
