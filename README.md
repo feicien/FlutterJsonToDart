@@ -15,7 +15,7 @@
 
 ## 安装
 
- 下载插件 <a href="images/DxyJsonToDart-1.0.1.zip" target="_blank">DxyJsonToDart-1.0.1.zip</a> 然后安装到 `Android Studio` 中
+ 在 `Android Studio` 插件中搜索 `DxyJsonToDart` 即可安装
 
 ## 使用
 
