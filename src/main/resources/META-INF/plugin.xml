@@ -40,5 +40,13 @@
                 description="Generate dart bean class File from JSON">
             <add-to-group group-id="NewGroup" anchor="first"/>
         </action>
+
+        <action id="FlutterJsonToDart.RunCommand" class="cn.dxy.app.dxyjsontodart.RunCommandAction"
+                text="Run 'flutter pub run build_runner watch'"
+                description="Run 'flutter pub run build_runner watch' command">
+            <add-to-group group-id="BuildMenu" anchor="first"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt f"/>
+        </action>
+
     </actions>
 </idea-plugin>

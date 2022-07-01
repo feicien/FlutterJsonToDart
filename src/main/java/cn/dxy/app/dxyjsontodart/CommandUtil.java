@@ -75,4 +75,19 @@ public class CommandUtil {
             showInfo("Cannot run command:" + command + "  " + exception.getMessage());
         }
     }
+
+    public static void runFlutterPubWatch(Project project) {
+
+        String workingDirectory = project.getBasePath();
+
+        TerminalView terminalView = TerminalView.getInstance(project);
+        ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow(TerminalToolWindowFactory.TOOL_WINDOW_ID);
+        if (window == null) {
+            showInfo("Please check that the following two plugins are installed: Terminal and Shell Script");
+            return;
+        }
+
+        ShellTerminalWidget terminalWidget = terminalView.createLocalShellWidget(workingDirectory, "Local");
+        executeCommand(terminalWidget, false, "flutter pub run build_runner watch");
+    }
 }
