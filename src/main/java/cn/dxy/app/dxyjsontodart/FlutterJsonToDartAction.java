@@ -16,7 +16,7 @@ import com.jetbrains.lang.dart.psi.DartFile;
 import org.jetbrains.annotations.NotNull;
 
 
-public class DxyJsonToDartAction extends AnAction {
+public class FlutterJsonToDartAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
@@ -59,7 +59,7 @@ public class DxyJsonToDartAction extends AnAction {
                 DartFile file = (DartFile) psiFileFactory.createFileFromText(fileName + ".dart", DartFileType.INSTANCE, generatorClassContent);
                 directory.add(file);
             });
-        }, "DxyJsonToDart", "DxyJsonToDart");
+        }, "FlutterJsonToDart", "FlutterJsonToDart");
 
         showNotify(project, "Dart Data Class file generated successful");
 
@@ -71,7 +71,7 @@ public class DxyJsonToDartAction extends AnAction {
 
     private void showNotify(Project project, String content) {
         NotificationGroupManager.getInstance()
-                .getNotificationGroup("DXY Notification Group")
+                .getNotificationGroup("FlutterJsonToDart")
                 .createNotification(content, NotificationType.INFORMATION)
                 .notify(project);
     }

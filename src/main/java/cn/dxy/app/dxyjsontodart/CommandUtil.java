@@ -19,7 +19,7 @@ public class CommandUtil {
 
 
     private static void showInfo(String message) {
-        Messages.showErrorDialog(message, "DxyJsonToDart");
+        Messages.showErrorDialog(message, "FlutterJsonToDart");
     }
 
     public static void runFlutterPubRun(Project project) {

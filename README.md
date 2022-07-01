@@ -1,6 +1,6 @@
 
 
-# DxyJsonToDart 
+# FlutterJsonToDart 
 
 
 一个可以自动把 `JSON` 解析为 `Dart` 模型类的 `Android Studio` 插件。
@@ -15,11 +15,11 @@
 
 ## 安装
 
- 在 `Android Studio` 插件中搜索 `DxyJsonToDart` 即可安装
+ 在 `Android Studio` 插件中搜索 `FlutterJsonToDart` 即可安装
 
 ## 使用
 
-选择需要保存模型类的文件夹，点击鼠标右键，选择 `New` , 然后点击 `DxyJsonToDart`, 在弹出的 `Dialog` 中输入类名和 `JSON` 字符串，然后点击 `OK` 按钮即可。
+选择需要保存模型类的文件夹，点击鼠标右键，选择 `New` , 然后点击 `FlutterJsonToDart`, 在弹出的 `Dialog` 中输入类名和 `JSON` 字符串，然后点击 `OK` 按钮即可。
 
 
 ## Demo
@@ -27,4 +27,4 @@
 
 ## 感谢
 
-本人之前没有写过 `IDEA` 插件，在写 `DxyJsonToDart` 插件时，参考了 [FlutterJsonBeanFactory](https://github.com/fluttercandies/FlutterJsonBeanFactory) 和 [AutoJson](https://github.com/LuodiJackShen/AutoJson) 的代码, 在此向他们表示感谢。
+本人之前没有写过 `IDEA` 插件，在写 `FlutterJsonToDart` 插件时，参考了 [FlutterJsonBeanFactory](https://github.com/fluttercandies/FlutterJsonBeanFactory) 和 [AutoJson](https://github.com/LuodiJackShen/AutoJson) 的代码, 在此向他们表示感谢。
