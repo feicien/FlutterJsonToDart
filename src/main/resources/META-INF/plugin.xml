@@ -4,22 +4,39 @@
     <vendor email="chengh@dxy.cn" url="https://app.dxy.cn">DXY</vendor>
 
     <description><![CDATA[
-    The plugin can help you generate dart model needed for json_serializable from a JSON data and add json_serializable dependencies and run the <b>flutter pub run build_runner build -delete-conflicting-outputs</b> command. <br><br>
-    <b>Usage:</b><br>
-    Launch the IDE and open plugin settings
-    <br>Search for "FlutterJsonToDart" and click install</br>
-    <br>Open a flutter project, Right click on package -> New -> FlutterJsonToDart</br>
-    <br>Input className and JSON data into the Plugin Dialog</br>
-    <br>The plugin will automatically add json_serializable related dependencies in the pubspec.yaml file</br>
-    <br>The plugin will automatically generate model classes</br>
-    <br>The plugin will automatically execute the command：flutter packages pub run build_runner build</br>
+The plugin can help you generate dart model needed for json_serializable from a JSON data and add json_serializable dependencies and run the <b>flutter pub run build_runner build -delete-conflicting-outputs</b> command. <br><br>
+<br>
+这个插件可以帮你自动把 json 数据生成带 json_serializable 注解的模型类，可以自动在 pubspec.yaml 文件添加 json_serializable 相关依赖，并且可以自动运行 <b>flutter pub run build_runner build -delete-conflicting-outputs</b> 命令，
+如果你需要修改生成字段，可以通过快捷键 alt + J 或通过菜单 Build -> Run 'flutter pub run build_runner watch' 运行 watch 命令
+<br>
+<h4>how to use</h4>
+<ol>
+    <li>Launch the IDE and open plugin settings</li>
+    <li>Search for "FlutterJsonToDart" and click install</li>
+    <li>Open a flutter project, Right click on package -> New -> FlutterJsonToDart</li>
+    <li>Input ClassName and JSON Text，and click Ok button</li>
+    <li>The plugin will automatically add json_serializable related dependencies in the pubspec.yaml file</li>
+    <li>The plugin will automatically generate model classes</li>
+    <li>The plugin will automatically execute the command：flutter packages pub run build_runner build</li>
+</ol>
     ]]>
     </description>
 
     <change-notes><![CDATA[
-       Automatically generate dart model classes from JSON
-       <br>Automatically add json_serializable related dependencies in the pubspec.yaml file</br>
-       <br>Automatically execute the command：flutter packages pub run build_runner build</br>
+      <p>
+      1.0.6
+      <ul>
+      <li>New: Support shortcut alt + F  or click menu Build -> Run 'flutter pub run build_runner watch'</li>
+      <li>modify input json dialog ui</li>
+      <li>DxyJsonToDart rename to FlutterJsonToDart</li>
+      </ul>
+      <p>
+      1.0.5
+      <ul>
+      <li>New: Automatically generate dart model classes from JSON</li>
+      <li>New: Automatically add json_serializable related dependencies in the pubspec.yaml file</li>
+      <li>New: Automatically execute the command：flutter packages pub run build_runner build</li>
+      </ul>
     ]]>
     </change-notes>
 
