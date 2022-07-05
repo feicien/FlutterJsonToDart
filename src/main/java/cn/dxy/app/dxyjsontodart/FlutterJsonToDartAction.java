@@ -37,7 +37,7 @@ public class FlutterJsonToDartAction extends AnAction {
         dialog.show();
 
         String inputClassName = dialog.getClassName();
-        String inputJsonStr = dialog.getJson();
+        String inputJsonStr = dialog.getJsonText();
 
         if (inputClassName == null || inputClassName.isEmpty()){
             return;
@@ -45,7 +45,6 @@ public class FlutterJsonToDartAction extends AnAction {
         if (inputJsonStr == null || inputJsonStr.isEmpty()) {
             return;
         }
-        //TODO 需要对用户输入的类名，和 json 进行数据校验
         String generatorClassContent = JsonHelper.generateDartClassesToString(inputClassName, inputJsonStr);
 
 

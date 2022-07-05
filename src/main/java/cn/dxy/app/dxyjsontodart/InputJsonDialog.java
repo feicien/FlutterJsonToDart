@@ -1,157 +1,171 @@
 package cn.dxy.app.dxyjsontodart;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.ui.Messages.InputDialog;
-import com.intellij.openapi.util.NlsSafe;
+import com.google.gson.*;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBDimension;
-import com.intellij.util.ui.JBEmptyBorder;
+import com.intellij.util.ui.JBInsets;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.text.JTextComponent;
+import javax.swing.event.DocumentEvent;
 import java.awt.*;
 
+public class InputJsonDialog extends DialogWrapper {
 
-public class InputJsonDialog extends InputDialog {
+    private JTextField mClassNameField;
+    private JTextArea mJsonTextField;
 
-
-    private JTextField classNameInput;
 
     public InputJsonDialog() {
-        super("请输入你要转换的 json 数据", "把 Json 转成 json_serializable 模型类",
-                Messages.getInformationIcon(), "", null);
+        super(false); // use current window as parent
+        setTitle("Generate Dart Data Class Annotated with JsonSerializable");
+        init();
+        getOKAction().setEnabled(false);
     }
 
 
+    @Nullable
     @Override
-    protected @NotNull JPanel createMessagePanel() {
+    protected JComponent createCenterPanel() {
         JPanel messagePanel = new JPanel(new BorderLayout());
-        if (myMessage != null) {
-            JComponent textComponent = createTextComponent();
-            messagePanel.add(textComponent, BorderLayout.NORTH);
-        }
-        myField = createTextFieldComponent();
+
+        JLabel textLabel = new JLabel("Please input the JSON text and Class name");
+
+        Box hBox1 = Box.createHorizontalBox();
+        hBox1.add(textLabel);
+        hBox1.add(Box.createHorizontalGlue());
 
 
-        JPanel classNameInputContainer = createLinearLayoutVertical();
-        JBLabel classNameTitle = new JBLabel("Class Name: ");
-        classNameTitle.setBorder(new JBEmptyBorder(5, 0, 5, 0));
-        addComponentIntoVerticalBoxAlignmentLeft(classNameInputContainer, classNameTitle);
+        JBLabel jsonLabel = new JBLabel("JSON text:");
 
+        Box hBox2 = Box.createHorizontalBox();
+        hBox2.add(jsonLabel);
+        hBox2.add(Box.createHorizontalGlue());
 
-        classNameInput = new JTextField();
-        classNameInput.setPreferredSize(new JBDimension(400, 40));
-//        classNameInput.getDocument().addDocumentListener(new DocumentAdapter() {
-//            @Override
-//            protected void textChanged(@NotNull DocumentEvent e) {
-//                getOKAction().setEnabled(myInputValidator.checkInput(myField.getText()));
-//            }
-//        });
-
-        addComponentIntoVerticalBoxAlignmentLeft(classNameInputContainer, classNameInput);
-        classNameInputContainer.setPreferredSize(new JBDimension(500, 56));
-
-
-        JComponent createScrollableTextComponent = createMyScrollableTextComponent();
-        JPanel jsonInputContainer = createLinearLayoutVertical();
-        jsonInputContainer.setPreferredSize(new JBDimension(700, 400));
-        jsonInputContainer.setBorder(new JBEmptyBorder(5, 0, 5, 5));
-        JBLabel jsonTitle = new JBLabel("JSON Text:");
-        jsonTitle.setBorder(new JBEmptyBorder(5, 0, 5, 0));
-        addComponentIntoVerticalBoxAlignmentLeft(jsonInputContainer, jsonTitle);
-        addComponentIntoVerticalBoxAlignmentLeft(jsonInputContainer, createScrollableTextComponent);
-
-
-        JPanel centerContainer = new JPanel();
-        BoxLayout centerBoxLayout = new BoxLayout(centerContainer, BoxLayout.PAGE_AXIS);
-        centerContainer.setLayout(centerBoxLayout);
-        addComponentIntoVerticalBoxAlignmentLeft(centerContainer, classNameInputContainer);
-        addComponentIntoVerticalBoxAlignmentLeft(centerContainer, jsonInputContainer);
-        messagePanel.add(centerContainer, BorderLayout.CENTER);
-
+        //格式化按钮栏
         JButton formatButton = new JButton("Format");
         formatButton.setHorizontalAlignment(SwingConstants.CENTER);
         formatButton.addActionListener(e -> handleFormatJSONString());
+        hBox2.add(formatButton);
 
-        //底部按钮栏
-        JPanel settingContainer = new JPanel();
-        settingContainer.setBorder(new JBEmptyBorder(0, 5, 5, 7));
-        BoxLayout boxLayout = new BoxLayout(settingContainer, BoxLayout.LINE_AXIS);
-        settingContainer.setLayout(boxLayout);
-        settingContainer.add(Box.createHorizontalGlue());
+        Box vBox = Box.createVerticalBox();
+        vBox.add(hBox1);
+        vBox.add(hBox2);
 
-        settingContainer.add(formatButton);
-        messagePanel.add(settingContainer, BorderLayout.SOUTH);
-        return messagePanel;
-    }
-
-    private void addComponentIntoVerticalBoxAlignmentLeft(JPanel centerContainer, Component component) {
-        if (centerContainer.getLayout() instanceof  BoxLayout) {
-
-            Box hBox = Box.createHorizontalBox();
-            hBox.add(component);
-            hBox.add(Box.createHorizontalGlue());
-            centerContainer.add(hBox);
-        }
-    }
-
-    @Override
-    protected JTextComponent createTextFieldComponent() {
-        JTextArea jTextArea = new JTextArea(15, 50);
-        jTextArea.setMinimumSize(new JBDimension(750, 400));
-//        jTextArea.lineWrap = true
-//        jTextArea.wrapStyleWord = true
-//        jTextArea.autoscrolls = true
-        return jTextArea;
-    }
+        messagePanel.add(vBox, BorderLayout.NORTH);
 
 
-    private JComponent createMyScrollableTextComponent() {
-        JBScrollPane jbScrollPane = new JBScrollPane(myField);
+        //创建内容输入区域
+        mJsonTextField = new JTextArea(15, 50);
+
+
+        mJsonTextField.setMargin(JBInsets.create(10, 10));
+        mJsonTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                enableOkAction();
+            }
+        });
+
+        JBScrollPane jbScrollPane = new JBScrollPane(mJsonTextField);
         jbScrollPane.setPreferredSize(new JBDimension(700, 350));
         jbScrollPane.setAutoscrolls(true);
         jbScrollPane.setHorizontalScrollBarPolicy(JBScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         jbScrollPane.setVerticalScrollBarPolicy(JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        return jbScrollPane;
+        messagePanel.add(jbScrollPane, BorderLayout.CENTER);
+
+
+        Box horizontalBox = Box.createHorizontalBox();
+
+        JBLabel classNameLabel = new JBLabel("Class name: ");
+        horizontalBox.add(classNameLabel);
+
+        mClassNameField = new JTextField();
+        mClassNameField.setPreferredSize(new JBDimension(400, 40));
+        mClassNameField.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(@NotNull DocumentEvent e) {
+                enableOkAction();
+            }
+        });
+        horizontalBox.add(mClassNameField);
+
+        messagePanel.add(horizontalBox, BorderLayout.SOUTH);
+
+
+        return messagePanel;
     }
 
+    private void enableOkAction() {
+        String jsonText = mJsonTextField.getText().trim();
 
+        String className = mClassNameField.getText().trim();
 
-    public void handleFormatJSONString() {
-        String currentText = myField.getText();//text ?: ""
-        if (!currentText.isEmpty()) {
+        if (jsonText.isEmpty()) {
+            setErrorText("Please input JSON text", mJsonTextField);
+            getOKAction().setEnabled(false);
+            return;
+        }
+
+        if (className.isEmpty()) {
+            setErrorText("Please input Class name", mClassNameField);
+            getOKAction().setEnabled(false);
+            return;
+        }
+
+        boolean isJson = inputIsValidJson(jsonText);
+        if (!isJson) {
+            setErrorText("Please check the JSON text is correct", mJsonTextField);
+            getOKAction().setEnabled(false);
+            return;
+        }
+
+        setErrorText(null);
+        getOKAction().setEnabled(true);
+    }
+
+    private boolean inputIsValidJson(String string) {
+        try {
+            JsonElement jsonElement = JsonParser.parseString(string);
+            return jsonElement.isJsonObject() || jsonElement.isJsonArray();
+        } catch (JsonSyntaxException ignored) {
+        }
+        return false;
+    }
+
+    private void handleFormatJSONString() {
+        String jsonText = mJsonTextField.getText().trim();
+        if (!jsonText.isEmpty()) {
             try {
                 Gson prettyGson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-                JsonElement jsonElement = prettyGson.fromJson(currentText, JsonElement.class);
+                JsonElement jsonElement = prettyGson.fromJson(jsonText, JsonElement.class);
                 String formatJSON = prettyGson.toJson(jsonElement);
-                myField.setText(formatJSON);
+                mJsonTextField.setText(formatJSON);
             } catch (Exception ignored) {
             }
         }
 
     }
 
-
-    public @Nullable @NlsSafe String getClassName() {
-        return getExitCode() == 0 ? classNameInput.getText().trim() : null;
+    @Override
+    public @Nullable JComponent getPreferredFocusedComponent() {
+        //重新该方法，可以设置默认获取焦点
+        return mJsonTextField;
     }
 
-    public @Nullable @NlsSafe String getJson() {
-        return getExitCode() == 0 ? myField.getText().trim() : null;
+    @Nullable
+    public String getClassName() {
+        return getExitCode() == 0 ? mClassNameField.getText().trim() : null;
     }
 
-
-    JPanel createLinearLayoutVertical() {
-        JPanel container = new JPanel();
-        BoxLayout boxLayout = new BoxLayout(container, BoxLayout.PAGE_AXIS);
-        container.setLayout(boxLayout);
-        return container;
+    @Nullable
+    public String getJsonText() {
+        return getExitCode() == 0 ? mJsonTextField.getText().trim() : null;
     }
+
 
 }
