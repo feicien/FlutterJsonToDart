@@ -7,7 +7,7 @@
 The plugin can help you generate dart model needed for json_serializable from a JSON data and add json_serializable dependencies and run the <b>flutter pub run build_runner build -delete-conflicting-outputs</b> command. <br><br>
 <br>
 这个插件可以帮你自动把 json 数据生成带 json_serializable 注解的模型类，可以自动在 pubspec.yaml 文件添加 json_serializable 相关依赖，并且可以自动运行 <b>flutter pub run build_runner build -delete-conflicting-outputs</b> 命令，
-如果你需要修改生成字段，可以通过快捷键 alt + J 或通过菜单 Build -> Run 'flutter pub run build_runner watch' 运行 watch 命令
+如果你需要修改生成字段，可以通过快捷键 alt + W 或通过菜单 Build -> Run 'flutter pub run build_runner watch' 运行 watch 命令
 <br>
 <h4>how to use</h4>
 <ol>
@@ -23,6 +23,12 @@ The plugin can help you generate dart model needed for json_serializable from a 
     </description>
 
     <change-notes><![CDATA[
+      1.0.7
+       <ul>
+       <li>1、make Property final</li>
+       <li>3、support shortcut 'alt + W' run "flutter pub run build_runner watch --delete-conflicting-outputs" command</li>
+       <li>4、support shortcut 'alt + B' run "flutter pub run build_runner build --delete-conflicting-outputs" command</li>
+       </ul>
       <p>
       1.0.6
       <ul>
@@ -70,7 +76,7 @@ The plugin can help you generate dart model needed for json_serializable from a 
                 text="Run 'Build Runner Watch' Command"
                 description="Run 'flutter pub run build_runner watch --delete-conflicting-outputs' command">
             <add-to-group group-id="BuildMenu" anchor="after" relative-to-action="FlutterJsonToDart.RunBuildCommand"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="alt w" second-keystroke="alt f"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt w"/>
         </action>
 
     </actions>

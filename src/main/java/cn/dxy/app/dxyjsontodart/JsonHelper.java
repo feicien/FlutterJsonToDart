@@ -86,15 +86,18 @@ public class JsonHelper {
 
         for (Map.Entry<String, Object> entry : item.entrySet()) {
             String key = entry.getKey();
+            String paramsType;
+            String paramsName;
             //如果 json 中的属性名称中包含下划线，添加 JsonKey 注解，如果不包含，就不加注解
             if (key.contains("_")) {
-                String jsonKey = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, key);
-                String jsonType = getObjectType(jsonKey, entry.getValue());
-                sb.append("  @JsonKey(name: '").append(key).append("')\n  ").append(jsonType).append(" ").append(jsonKey).append(";\n");
+                paramsName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, key);
+                paramsType = getObjectType(paramsName, entry.getValue());
+                sb.append("  @JsonKey(name: '").append(key).append("')\n");
             } else {
-                String jsonType = getObjectType(key, entry.getValue());
-                sb.append("  ").append(jsonType).append(" ").append(key).append(";\n");
+                paramsType = getObjectType(key, entry.getValue());
+                paramsName = key;
             }
+            sb.append("  final ").append(paramsType).append(" ").append(paramsName).append(";\n");
         }
 
         sb.append("\n  ").append(fileName).append("({\n");
