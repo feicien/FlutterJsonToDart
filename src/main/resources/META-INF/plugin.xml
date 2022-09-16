@@ -59,11 +59,18 @@ The plugin can help you generate dart model needed for json_serializable from a 
             <add-to-group group-id="NewGroup" anchor="first"/>
         </action>
 
-        <action id="FlutterJsonToDart.RunCommand" class="cn.dxy.app.dxyjsontodart.RunCommandAction"
-                text="Run 'flutter pub run build_runner watch'"
-                description="Run 'flutter pub run build_runner watch' command">
-            <add-to-group group-id="BuildMenu" anchor="first"/>
-            <keyboard-shortcut keymap="$default" first-keystroke="alt f"/>
+        <action id="FlutterJsonToDart.RunBuildCommand" class="cn.dxy.app.dxyjsontodart.RunBuildCommandAction"
+                text="Run 'Build Runner Build' Command"
+                description="Run 'flutter pub run build_runner build --delete-conflicting-outputs' command">
+            <add-to-group group-id="BuildMenu" anchor="first" />
+            <keyboard-shortcut keymap="$default" first-keystroke="alt b"/>
+        </action>
+
+        <action id="FlutterJsonToDart.RunWatchCommand" class="cn.dxy.app.dxyjsontodart.RunWatchCommandAction"
+                text="Run 'Build Runner Watch' Command"
+                description="Run 'flutter pub run build_runner watch --delete-conflicting-outputs' command">
+            <add-to-group group-id="BuildMenu" anchor="after" relative-to-action="FlutterJsonToDart.RunBuildCommand"/>
+            <keyboard-shortcut keymap="$default" first-keystroke="alt w" second-keystroke="alt f"/>
         </action>
 
     </actions>

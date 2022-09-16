@@ -1,9 +1,12 @@
 package cn.dxy.app.dxyjsontodart;
 
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.terminal.ShellTerminalWidget;
 import org.jetbrains.plugins.terminal.TerminalToolWindowFactory;
 import org.jetbrains.plugins.terminal.TerminalView;
@@ -76,7 +79,21 @@ public class CommandUtil {
         }
     }
 
-    public static void runFlutterPubWatch(Project project) {
+    public static void runBuildRunnerCommandBuild(@NotNull AnActionEvent event) {
+        String command = "flutter pub run build_runner build --delete-conflicting-outputs";
+        runBuildRunnerCommand(event, command);
+    }
+
+    public static void runBuildRunnerCommandWatch(@NotNull AnActionEvent event) {
+        String command = "flutter pub run build_runner watch --delete-conflicting-outputs";
+        runBuildRunnerCommand(event, command);
+    }
+
+    public static void runBuildRunnerCommand(@NotNull AnActionEvent event, String command) {
+        Project project = event.getData(PlatformDataKeys.PROJECT);
+        if (project == null) {
+            return;
+        }
 
         String workingDirectory = project.getBasePath();
 
@@ -88,6 +105,6 @@ public class CommandUtil {
         }
 
         ShellTerminalWidget terminalWidget = terminalView.createLocalShellWidget(workingDirectory, "Local");
-        executeCommand(terminalWidget, false, "flutter pub run build_runner watch");
+        executeCommand(terminalWidget, false, command);
     }
 }
