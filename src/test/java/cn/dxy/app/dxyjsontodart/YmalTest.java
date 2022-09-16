@@ -1,33 +1,16 @@
 package cn.dxy.app.dxyjsontodart;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
+import org.junit.Test;
 
-import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 
-public class Main {
+import static org.junit.Assert.assertEquals;
 
-    public static void main(String[] args) {
+public class YmalTest {
 
-//        testJsonToDart();
 
-        testYmal();
-    }
-
-    private static void testJsonToDart() {
-        try {
-            URL url = Resources.getResource("test1.json");
-            String json = Resources.toString(url, Charsets.UTF_8);
-            String str = JsonHelper.generateDartClassesToString("HelloWorld", json);
-            System.out.printf(str);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public static void testYmal(){
+    @Test
+    public void testYmal() {
         String yaml = "name: flutter_plugin_demo\n" +
                 "description: A new Flutter project.\n" +
                 "\n" +
@@ -122,8 +105,26 @@ public class Main {
                 "  # see https://flutter.dev/custom-fonts/#from-packages\n";
 
         List<FlutterDependencyBean> dependencies = YamlUtils.getDependencies(yaml);
-        for (FlutterDependencyBean dependency : dependencies) {
-            System.out.println(dependency);
-        }
+
+        FlutterDependencyBean dependency0 = dependencies.get(0);
+        assertEquals(dependency0.packageName, "cupertino_icons");
+        assertEquals(dependency0.currentVersion, "1.0.2");
+
+
+        FlutterDependencyBean dependency1 = dependencies.get(1);
+        assertEquals(dependency1.packageName, "json_annotation");
+        assertEquals(dependency1.currentVersion, "4.5.0");
+
+        FlutterDependencyBean dependency2 = dependencies.get(2);
+        assertEquals(dependency2.packageName, "flutter_lints");
+        assertEquals(dependency2.currentVersion, "2.0.0");
+
+        FlutterDependencyBean dependency3 = dependencies.get(3);
+        assertEquals(dependency3.packageName, "json_serializable");
+        assertEquals(dependency3.currentVersion, "6.2.0");
+
+        FlutterDependencyBean dependency4 = dependencies.get(4);
+        assertEquals(dependency4.packageName, "build_runner");
+        assertEquals(dependency4.currentVersion, "2.1.11");
     }
 }
