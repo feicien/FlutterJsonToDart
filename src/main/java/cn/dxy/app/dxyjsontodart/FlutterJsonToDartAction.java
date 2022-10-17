@@ -1,13 +1,11 @@
 package cn.dxy.app.dxyjsontodart;
 
 import com.intellij.notification.*;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.LangDataKeys;
-import com.intellij.openapi.actionSystem.PlatformDataKeys;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.command.CommandProcessor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.pom.Navigatable;
 import com.intellij.psi.PsiDirectory;
 import com.intellij.psi.PsiFileFactory;
@@ -33,7 +31,7 @@ public class FlutterJsonToDartAction extends AnAction {
 
         //弹一个 dialog，用户可以输入 json
 
-        InputJsonDialog dialog = new InputJsonDialog();
+        InputJsonDialog dialog = new InputJsonDialog(project);
         dialog.show();
 
         String inputClassName = dialog.getClassName();
@@ -73,5 +71,14 @@ public class FlutterJsonToDartAction extends AnAction {
                 .getNotificationGroup("FlutterJsonToDart")
                 .createNotification(content, NotificationType.INFORMATION)
                 .notify(project);
+    }
+
+    @Override
+    public void update(@NotNull AnActionEvent e) {
+        Project project = e.getProject();
+        VirtualFile file = e.getData(CommonDataKeys.VIRTUAL_FILE);
+        boolean enabled = project != null && file != null && file.isDirectory();
+        //项目不为空，并且点击的是一个目录时，显示 action
+        e.getPresentation().setEnabledAndVisible(enabled);
     }
 }

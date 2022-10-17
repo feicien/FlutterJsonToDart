@@ -1,103 +1,57 @@
 package cn.dxy.app.dxyjsontodart;
 
 import com.google.gson.*;
+import com.intellij.openapi.editor.event.DocumentListener;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.DocumentAdapter;
-import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBScrollPane;
+import com.intellij.ui.LanguageTextField;
 import com.intellij.util.ui.JBDimension;
-import com.intellij.util.ui.JBInsets;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
-import java.awt.*;
 
 public class InputJsonDialog extends DialogWrapper {
 
+    private final Project myProject;
     private JTextField mClassNameField;
-    private JTextArea mJsonTextField;
+    private LanguageTextField mJsonTextField;
+    private JPanel mainPanel;
+    private JButton formatButton;
 
 
-    public InputJsonDialog() {
-        super(false); // use current window as parent
+    public InputJsonDialog(Project project) {
+        super(project, false); // use current window as parent
+        this.myProject = project;
         setTitle("Generate Dart Data Class Annotated with JsonSerializable");
         init();
         getOKAction().setEnabled(false);
-    }
 
-
-    @Nullable
-    @Override
-    protected JComponent createCenterPanel() {
-        JPanel messagePanel = new JPanel(new BorderLayout());
-
-        JLabel textLabel = new JLabel("Please input the JSON text and Class name");
-
-        Box hBox1 = Box.createHorizontalBox();
-        hBox1.add(textLabel);
-        hBox1.add(Box.createHorizontalGlue());
-
-
-        JBLabel jsonLabel = new JBLabel("JSON text:");
-
-        Box hBox2 = Box.createHorizontalBox();
-        hBox2.add(jsonLabel);
-        hBox2.add(Box.createHorizontalGlue());
-
-        //格式化按钮栏
-        JButton formatButton = new JButton("Format");
-        formatButton.setHorizontalAlignment(SwingConstants.CENTER);
         formatButton.addActionListener(e -> handleFormatJSONString());
-        hBox2.add(formatButton);
-
-        Box vBox = Box.createVerticalBox();
-        vBox.add(hBox1);
-        vBox.add(hBox2);
-
-        messagePanel.add(vBox, BorderLayout.NORTH);
 
 
-        //创建内容输入区域
-        mJsonTextField = new JTextArea(15, 50);
-
-
-        mJsonTextField.setMargin(JBInsets.create(10, 10));
-        mJsonTextField.getDocument().addDocumentListener(new DocumentAdapter() {
+        mJsonTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
-            protected void textChanged(@NotNull DocumentEvent e) {
+            public void documentChanged(com.intellij.openapi.editor.event.@NotNull DocumentEvent event) {
                 enableOkAction();
             }
         });
 
-        JBScrollPane jbScrollPane = new JBScrollPane(mJsonTextField);
-        jbScrollPane.setPreferredSize(new JBDimension(700, 350));
-        jbScrollPane.setAutoscrolls(true);
-        jbScrollPane.setHorizontalScrollBarPolicy(JBScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        jbScrollPane.setVerticalScrollBarPolicy(JBScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        messagePanel.add(jbScrollPane, BorderLayout.CENTER);
-
-
-        Box horizontalBox = Box.createHorizontalBox();
-
-        JBLabel classNameLabel = new JBLabel("Class name: ");
-        horizontalBox.add(classNameLabel);
-
-        mClassNameField = new JTextField();
-        mClassNameField.setPreferredSize(new JBDimension(400, 40));
         mClassNameField.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
             protected void textChanged(@NotNull DocumentEvent e) {
                 enableOkAction();
             }
         });
-        horizontalBox.add(mClassNameField);
-
-        messagePanel.add(horizontalBox, BorderLayout.SOUTH);
+    }
 
 
-        return messagePanel;
+    @Nullable
+    @Override
+    protected JComponent createCenterPanel() {
+        return mainPanel;
     }
 
     private void enableOkAction() {
@@ -168,4 +122,9 @@ public class InputJsonDialog extends DialogWrapper {
     }
 
 
+    private void createUIComponents() {
+        mJsonTextField = new JsonLanguageTextField(myProject);
+        mJsonTextField.setPreferredSize(new JBDimension(700, 350));
+        mJsonTextField.setEnabled(true);
+    }
 }
