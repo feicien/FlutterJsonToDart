@@ -1,10 +1,17 @@
+import org.jetbrains.changelog.Changelog
+import org.jetbrains.changelog.date
+import org.jetbrains.changelog.markdownToHTML
+
+
+fun properties(key: String) = project.findProperty(key).toString()
+
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.6.0"
+    id("org.jetbrains.intellij") version "1.10.0"
+    id("org.jetbrains.changelog") version "2.0.0"
 }
 
-group = "cn.dxy.app"
-version = "1.0.7"
+version = properties("pluginVersion")
 
 repositories {
     mavenCentral()
@@ -12,7 +19,7 @@ repositories {
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
 intellij {
-    version.set("2021.3")
+    version.set("2021.3.3")
     type.set("IC") // Target IDE Platform
 
     plugins.set(
@@ -24,6 +31,12 @@ intellij {
             "org.jetbrains.plugins.terminal:213.5744.121", //https://plugins.jetbrains.com/plugin/13123-terminal/versions
         )
     )
+}
+
+changelog {
+    version.set(properties("pluginVersion"))
+    header.set(provider { "[${version.get()}] - ${date()}" })
+    groups.set(listOf("Added", "Changed", "Deprecated", "Removed", "Fixed", "Security"))
 }
 
 tasks {
@@ -39,8 +52,29 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("212")
-        untilBuild.set("223.*")
+        sinceBuild.set("200.*")
+        untilBuild.set("300.*")
+
+        // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
+        pluginDescription.set(
+            projectDir.resolve("README.md").readText().lines().run {
+                val start = "<!-- Plugin description -->"
+                val end = "<!-- Plugin description end -->"
+
+                if (!containsAll(listOf(start, end))) {
+                    throw GradleException("Plugin description section not found in README.md:\n$start ... $end")
+                }
+                subList(indexOf(start) + 1, indexOf(end))
+            }.joinToString("\n").run { markdownToHTML(this) }
+        )
+
+        // Get the latest available change notes from the changelog file
+        changeNotes.set(provider {
+            changelog.renderItem(
+                changelog.getLatest().withHeader(false).withEmptySections(false),
+                Changelog.OutputType.HTML
+            )
+        })
     }
 
     signPlugin {
@@ -50,6 +84,11 @@ tasks {
     }
 
     publishPlugin {
+        dependsOn("patchChangelog")
         token.set(System.getenv("PUBLISH_TOKEN"))
+    }
+
+    runPluginVerifier {
+        ideVersions.set(properties("pluginVerifierIdeVersions").split(',').map(String::trim).filter(String::isNotEmpty))
     }
 }
