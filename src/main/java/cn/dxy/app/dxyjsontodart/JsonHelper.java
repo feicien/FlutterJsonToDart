@@ -3,6 +3,7 @@ package cn.dxy.app.dxyjsontodart;
 import com.google.common.base.CaseFormat;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
+import com.intellij.openapi.util.text.StringUtil;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -15,7 +16,7 @@ public class JsonHelper {
      * @param className   用户输入的类名
      * @param originalStr 用户输入的 json
      */
-    public static String generateDartClassesToString(String className, String originalStr) {
+    public static String generateDartClassesToString(String className, String originalStr, boolean createToJson, boolean defaultValue) {
 
         Map<String, Map<String, Object>> map = new LinkedHashMap<>();
 
@@ -26,7 +27,7 @@ public class JsonHelper {
 
         //遍历找到的对象，一个对象生成一个模型
         for (Map.Entry<String, Map<String, Object>> stringMapEntry : map.entrySet()) {
-            String classContent = generateClassContent(stringMapEntry.getKey(), stringMapEntry.getValue());
+            String classContent = generateClassContent(stringMapEntry.getKey(), stringMapEntry.getValue(), createToJson, defaultValue);
             sb.append(classContent);
         }
 
@@ -75,7 +76,7 @@ public class JsonHelper {
     /**
      * 根据 item 中的数据生成一个模型
      */
-    private static String generateClassContent(String fileName1, Map<String, Object> item) {
+    private static String generateClassContent(String fileName1, Map<String, Object> item, boolean createToJson, boolean defaultValue) {
 
         String fileName = StringUtils.getClassName(fileName1);
 
@@ -86,16 +87,26 @@ public class JsonHelper {
 
         for (Map.Entry<String, Object> entry : item.entrySet()) {
             String key = entry.getKey();
+            Object value = entry.getValue();
             String paramsType;
             String paramsName;
+            String defaultValueStr = getDefaultValue(value);
             //如果 json 中的属性名称中包含下划线，添加 JsonKey 注解，如果不包含，就不加注解
             if (key.contains("_")) {
                 paramsName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, key);
-                paramsType = getObjectType(paramsName, entry.getValue());
-                sb.append("  @JsonKey(name: '").append(key).append("')\n");
+                paramsType = getObjectType(paramsName, value, defaultValue);
+                if (defaultValue && StringUtil.isNotEmpty(defaultValueStr)) {
+                    sb.append("  @JsonKey(name: '").append(key).append("', ").append(defaultValueStr).append(")\n");
+                } else {
+                    sb.append("  @JsonKey(name: '").append(key).append("')\n");
+                }
             } else {
-                paramsType = getObjectType(key, entry.getValue());
                 paramsName = key;
+                paramsType = getObjectType(key, value, defaultValue);
+
+                if (defaultValue && StringUtil.isNotEmpty(defaultValueStr)) {
+                    sb.append("  @JsonKey(").append(defaultValueStr).append(")\n");
+                }
             }
             sb.append("  final ").append(paramsType).append(" ").append(paramsName).append(";\n");
         }
@@ -105,29 +116,52 @@ public class JsonHelper {
 
         for (Map.Entry<String, Object> entry : item.entrySet()) {
             String key = entry.getKey();
+            Object value = entry.getValue();
             if (key.contains("_")) {
-                String jsonKey = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, entry.getKey());
-                sb.append("    this.").append(jsonKey).append(",\n");
-            } else {
-                sb.append("    this.").append(key).append(",\n");
+                key = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, entry.getKey());
             }
+            String defaultValueStr = getDefaultValue(value);
+            if (defaultValue && StringUtil.isNotEmpty(defaultValueStr)) {
+                sb.append("    required this.");
+            } else {
+                sb.append("    this.");
+            }
+            sb.append(key).append(",\n");
         }
 
-        sb.append("  });\n\n  factory ").append(fileName).append(".fromJson(Map<String, dynamic> json) =>\n      _$").append(fileName).append("FromJson(json);\n\n  Map<String, dynamic> toJson() => _$").append(fileName).append("ToJson(this);\n}\n");
+        sb.append("  });\n\n");
+        sb.append("  factory ").append(fileName).append(".fromJson(Map<String, dynamic> json) =>\n      _$").append(fileName).append("FromJson(json);\n");
+        if (createToJson) {
+            sb.append("\n  Map<String, dynamic> toJson() => _$").append(fileName).append("ToJson(this);\n");
+        }
+        sb.append("}\n");
 
         return sb.toString();
     }
 
-    private static String getObjectType(String key, Object value) {
+    private static String getDefaultValue(Object value) {
+        if (value instanceof Boolean) {
+            return "defaultValue: false";
+        } else if (value instanceof Double) {
+            return "defaultValue: 0";
+        } else if (value instanceof Long || value instanceof Integer) {
+            return "defaultValue: 0";
+        } else if (value instanceof List) {
+            return "defaultValue: []";
+        } else if (value instanceof String) {
+            return "defaultValue: ''";
+        }
+        return null;
+    }
+
+    private static String getObjectType(String key, Object value, boolean defaultValue) {
         String classType = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, key);
         if (value instanceof Boolean) {
-            return "bool?";
+            return defaultValue ? "bool" : "bool?";
         } else if (value instanceof Double) {
-            return "double?";
-        } else if (value instanceof Long) {
-            return "int?";
-        } else if (value instanceof Integer) {
-            return "int?";
+            return defaultValue ? "double" : "double?";
+        } else if (value instanceof Long || value instanceof Integer) {
+            return defaultValue ? "int" : "int?";
         } else if (value instanceof List) {
             List<?> list = (List<?>) value;
             // 处理这种数据 []
@@ -145,13 +179,13 @@ public class JsonHelper {
                 if (o instanceof String) {
                     classType = "String";
                 }
-                return "List<" + classType + ">?";
+                return defaultValue ? "List<" + classType + ">" : "List<" + classType + ">?";
             }
-            return "List<dynamic>?";
+            return defaultValue ? "List<dynamic>" : "List<dynamic>?";
         } else if (value instanceof Map) {
             return classType + "?";
         } else if (value instanceof String) {
-            return "String?";
+            return defaultValue ? "String" : "String?";
         }
         return "dynamic";
     }

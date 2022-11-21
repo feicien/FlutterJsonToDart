@@ -1,5 +1,6 @@
 package cn.dxy.app.dxyjsontodart;
 
+import cn.dxy.app.dxyjsontodart.setting.FlutterJsonToDartSetting;
 import com.intellij.notification.*;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
@@ -43,7 +44,8 @@ public class FlutterJsonToDartAction extends AnAction {
         if (inputJsonStr == null || inputJsonStr.isEmpty()) {
             return;
         }
-        String generatorClassContent = JsonHelper.generateDartClassesToString(inputClassName, inputJsonStr);
+        FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
+        String generatorClassContent = JsonHelper.generateDartClassesToString(inputClassName, inputJsonStr, instance.createToJson, instance.defaultValue);
 
 
 

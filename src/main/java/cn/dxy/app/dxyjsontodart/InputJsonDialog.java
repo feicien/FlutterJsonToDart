@@ -1,5 +1,6 @@
 package cn.dxy.app.dxyjsontodart;
 
+import cn.dxy.app.dxyjsontodart.setting.FlutterJsonToDartSetting;
 import com.google.gson.*;
 import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.project.Project;
@@ -12,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
+import java.awt.event.ItemEvent;
 
 public class InputJsonDialog extends DialogWrapper {
 
@@ -20,6 +22,8 @@ public class InputJsonDialog extends DialogWrapper {
     private LanguageTextField mJsonTextField;
     private JPanel mainPanel;
     private JButton formatButton;
+    private JCheckBox createToJsonCheckBox;
+    private JCheckBox defaultCheckBox;
 
 
     public InputJsonDialog(Project project) {
@@ -45,6 +49,14 @@ public class InputJsonDialog extends DialogWrapper {
                 enableOkAction();
             }
         });
+
+        FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
+        createToJsonCheckBox.setSelected(instance.createToJson);
+        defaultCheckBox.setSelected(instance.defaultValue);
+
+
+        createToJsonCheckBox.addItemListener(e -> instance.createToJson = e.getStateChange() == ItemEvent.SELECTED);
+        defaultCheckBox.addItemListener(e -> instance.defaultValue = e.getStateChange() == ItemEvent.SELECTED);
     }
 
 
