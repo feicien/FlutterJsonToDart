@@ -7,7 +7,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.LanguageTextField;
-import com.intellij.util.ui.JBDimension;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,9 +20,11 @@ public class InputJsonDialog extends DialogWrapper {
     private JTextField mClassNameField;
     private LanguageTextField mJsonTextField;
     private JPanel mainPanel;
-    private JButton formatButton;
     private JCheckBox createToJsonCheckBox;
     private JCheckBox defaultCheckBox;
+    private JCheckBox useJsonKeyNameCheckBox;
+    private LanguageTextField mDartTextField;
+    private JSplitPane jSplitPane;
 
 
     public InputJsonDialog(Project project) {
@@ -33,12 +34,12 @@ public class InputJsonDialog extends DialogWrapper {
         init();
         getOKAction().setEnabled(false);
 
-        formatButton.addActionListener(e -> handleFormatJSONString());
 
 
         mJsonTextField.getDocument().addDocumentListener(new DocumentListener() {
             @Override
             public void documentChanged(com.intellij.openapi.editor.event.@NotNull DocumentEvent event) {
+                // 文档发生改变回调
                 enableOkAction();
             }
         });
@@ -53,10 +54,21 @@ public class InputJsonDialog extends DialogWrapper {
         FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
         createToJsonCheckBox.setSelected(instance.createToJson);
         defaultCheckBox.setSelected(instance.defaultValue);
+        useJsonKeyNameCheckBox.setSelected(instance.useJsonKeyName);
 
 
-        createToJsonCheckBox.addItemListener(e -> instance.createToJson = e.getStateChange() == ItemEvent.SELECTED);
-        defaultCheckBox.addItemListener(e -> instance.defaultValue = e.getStateChange() == ItemEvent.SELECTED);
+        createToJsonCheckBox.addItemListener(e -> {
+            instance.createToJson = e.getStateChange() == ItemEvent.SELECTED;
+            enableOkAction();
+        });
+        defaultCheckBox.addItemListener(e -> {
+            instance.defaultValue = e.getStateChange() == ItemEvent.SELECTED;
+            enableOkAction();
+        });
+        useJsonKeyNameCheckBox.addItemListener(e -> {
+            instance.useJsonKeyName = e.getStateChange() == ItemEvent.SELECTED;
+            enableOkAction();
+        });
     }
 
 
@@ -92,6 +104,10 @@ public class InputJsonDialog extends DialogWrapper {
 
         setErrorText(null);
         getOKAction().setEnabled(true);
+
+        FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
+        String generatorClassContent = JsonHelper.generateDartClassesToString(className, jsonText, instance.createToJson, instance.defaultValue, instance.useJsonKeyName);
+        mDartTextField.setText(generatorClassContent);
     }
 
     private boolean inputIsValidJson(String string) {
@@ -103,19 +119,6 @@ public class InputJsonDialog extends DialogWrapper {
         return false;
     }
 
-    private void handleFormatJSONString() {
-        String jsonText = mJsonTextField.getText().trim();
-        if (!jsonText.isEmpty()) {
-            try {
-                Gson prettyGson = new GsonBuilder().setPrettyPrinting().serializeNulls().create();
-                JsonElement jsonElement = prettyGson.fromJson(jsonText, JsonElement.class);
-                String formatJSON = prettyGson.toJson(jsonElement);
-                mJsonTextField.setText(formatJSON);
-            } catch (Exception ignored) {
-            }
-        }
-
-    }
 
     @Override
     public @Nullable JComponent getPreferredFocusedComponent() {
@@ -136,7 +139,10 @@ public class InputJsonDialog extends DialogWrapper {
 
     private void createUIComponents() {
         mJsonTextField = new JsonLanguageTextField(myProject);
-        mJsonTextField.setPreferredSize(new JBDimension(700, 350));
         mJsonTextField.setEnabled(true);
+
+
+        mDartTextField = new DartLanguageTextField(myProject);
+        mDartTextField.setEnabled(true);
     }
 }

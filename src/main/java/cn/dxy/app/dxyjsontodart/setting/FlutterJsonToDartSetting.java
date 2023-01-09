@@ -11,8 +11,12 @@ import org.jetbrains.annotations.Nullable;
 @State(name = "FlutterJsonToDart", storages = {@Storage(value = "FlutterJsonToDart.xml")})
 public class FlutterJsonToDartSetting implements PersistentStateComponent<FlutterJsonToDartSetting> {
 
+    //是否生成 toJson 方法
     public boolean createToJson = true;
+    //是否对生成的 model 字段，设置默认值
     public boolean defaultValue = false;
+    //是否设置 JsonKey.name
+    public boolean useJsonKeyName = true;
 
 
     public static FlutterJsonToDartSetting getInstance() {
@@ -29,6 +33,7 @@ public class FlutterJsonToDartSetting implements PersistentStateComponent<Flutte
     public void loadState(@NotNull FlutterJsonToDartSetting state) {
         this.createToJson = state.createToJson;
         this.defaultValue = state.defaultValue;
+        this.useJsonKeyName = state.useJsonKeyName;
     }
 
 

@@ -7,7 +7,9 @@ fun properties(key: String) = project.findProperty(key).toString()
 
 plugins {
     id("java")
-    id("org.jetbrains.intellij") version "1.10.0"
+    // Kotlin support
+    id("org.jetbrains.kotlin.jvm") version "1.7.21"
+    id("org.jetbrains.intellij") version "1.11.0"
     id("org.jetbrains.changelog") version "2.0.0"
 }
 
@@ -24,6 +26,7 @@ intellij {
 
     plugins.set(
         listOf(
+            "com.intellij.java",
             //因为要生成 dart 文件，需要使用到 dart 插件中的类，所以这里要引入 dart 插件
             "Dart:213.5744.122", //https://plugins.jetbrains.com/plugin/6351-dart/versions
 //            "io.flutter:63.2.4",//https://plugins.jetbrains.com/plugin/9212-flutter/versions/stable

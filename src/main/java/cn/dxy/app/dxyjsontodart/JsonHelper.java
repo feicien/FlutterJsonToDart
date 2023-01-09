@@ -16,7 +16,7 @@ public class JsonHelper {
      * @param className   用户输入的类名
      * @param originalStr 用户输入的 json
      */
-    public static String generateDartClassesToString(String className, String originalStr, boolean createToJson, boolean defaultValue) {
+    public static String generateDartClassesToString(String className, String originalStr, boolean createToJson, boolean defaultValue, boolean useJsonKeyName) {
 
         Map<String, Map<String, Object>> map = new LinkedHashMap<>();
 
@@ -27,7 +27,7 @@ public class JsonHelper {
 
         //遍历找到的对象，一个对象生成一个模型
         for (Map.Entry<String, Map<String, Object>> stringMapEntry : map.entrySet()) {
-            String classContent = generateClassContent(stringMapEntry.getKey(), stringMapEntry.getValue(), createToJson, defaultValue);
+            String classContent = generateClassContent(stringMapEntry.getKey(), stringMapEntry.getValue(), createToJson, defaultValue, useJsonKeyName);
             sb.append(classContent);
         }
 
@@ -76,7 +76,7 @@ public class JsonHelper {
     /**
      * 根据 item 中的数据生成一个模型
      */
-    private static String generateClassContent(String fileName1, Map<String, Object> item, boolean createToJson, boolean defaultValue) {
+    private static String generateClassContent(String fileName1, Map<String, Object> item, boolean createToJson, boolean defaultValue, boolean useJsonKeyName) {
 
         String fileName = StringUtils.getClassName(fileName1);
 
@@ -95,10 +95,16 @@ public class JsonHelper {
             if (key.contains("_")) {
                 paramsName = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, key);
                 paramsType = getObjectType(paramsName, value, defaultValue);
-                if (defaultValue && StringUtil.isNotEmpty(defaultValueStr)) {
-                    sb.append("  @JsonKey(name: '").append(key).append("', ").append(defaultValueStr).append(")\n");
+                if (useJsonKeyName) {
+                    if (defaultValue && StringUtil.isNotEmpty(defaultValueStr)) {
+                        sb.append("  @JsonKey(name: '").append(key).append("', ").append(defaultValueStr).append(")\n");
+                    } else {
+                        sb.append("  @JsonKey(name: '").append(key).append("')\n");
+                    }
                 } else {
-                    sb.append("  @JsonKey(name: '").append(key).append("')\n");
+                    if (defaultValue && StringUtil.isNotEmpty(defaultValueStr)) {
+                        sb.append("  @JsonKey(").append(defaultValueStr).append(")\n");
+                    }
                 }
             } else {
                 paramsName = key;
@@ -111,7 +117,7 @@ public class JsonHelper {
             sb.append("  final ").append(paramsType).append(" ").append(paramsName).append(";\n");
         }
 
-        sb.append("\n  ").append(fileName).append("({\n");
+        sb.append("\n  const ").append(fileName).append("({\n");
 
 
         for (Map.Entry<String, Object> entry : item.entrySet()) {
