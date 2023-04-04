@@ -1,0 +1,46 @@
+{
+  "commodityName": "cwh广告费结算勿动",
+  "commodityId": "3576388616802402318",
+  "specificationOptionNames": "格订阅测试2-0元固定技术规",
+  "expireTime": 1680688194000,
+  "reserveStoreInfo": {
+    "storeName": "陈文慧服务商6-民营第三方",
+    "storeAddress": "浙江杭州市哈哈哈哈哈哈哈1",
+    "storeCellphone": "00000",
+    "supplierLogo": "https://img1.dxycdn.com/2022/0805/559/2072174867938414653-62.png",
+    "latitude": "30.419183",
+    "longitude": "120.297858",
+    "supplierNotice": "",
+    "serviceNature": 5
+  },
+  "id": "3609064869812386672",
+  "orderType": 20,
+  "orderItemId": "3609064871875969035",
+  "deleted": false,
+  "orderSubmitId": "3609064869728485384",
+  "status": 20,
+  "reason": "",
+  "verificationCode": "27541575",
+  "reserveUserInfo": {
+    "id": "3609062997206641996",
+    "realName": "孙福之",
+    "sex": 1,
+    "ageStr": "46岁"
+  },
+  "reserveTimeInfo": {
+    "reserveDate": "2023-04-16",
+    "reserveTime": null
+  },
+  "showTreat": false,
+  "supplierId": "3564146055283081224",
+  "shuffleActivityId": "0",
+  "orderInfo": {
+    "price": 400000,
+    "appointmentPrice": 0,
+    "deductionCouponDenomination": 20000,
+    "payedAmount": 0,
+    "reserveFee": true,
+    "commentType": 3,
+    "groupPrice": 0
+  }
+}

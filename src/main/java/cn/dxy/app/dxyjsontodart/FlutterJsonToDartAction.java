@@ -45,7 +45,7 @@ public class FlutterJsonToDartAction extends AnAction {
             return;
         }
         FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
-        String generatorClassContent = JsonHelper.generateDartClassesToString(inputClassName, inputJsonStr, instance.createToJson, instance.defaultValue, instance.useJsonKeyName);
+        String generatorClassContent = JsonHelper.generateDartClassesToString(inputClassName, inputJsonStr, instance);
 
 
 

@@ -20,11 +20,14 @@ public class InputJsonDialog extends DialogWrapper {
     private JTextField mClassNameField;
     private LanguageTextField mJsonTextField;
     private JPanel mainPanel;
-    private JCheckBox createToJsonCheckBox;
-    private JCheckBox defaultCheckBox;
-    private JCheckBox useJsonKeyNameCheckBox;
-    private LanguageTextField mDartTextField;
     private JSplitPane jSplitPane;
+    private LanguageTextField mDartTextField;
+    private JCheckBox createToJson;
+    private JCheckBox defaultValue;
+    private JCheckBox useJsonKeyName;
+    private JCheckBox explicitToJson;
+    private JCheckBox fieldRename;
+    private JCheckBox copyWith;
 
 
     public InputJsonDialog(Project project) {
@@ -52,21 +55,36 @@ public class InputJsonDialog extends DialogWrapper {
         });
 
         FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
-        createToJsonCheckBox.setSelected(instance.createToJson);
-        defaultCheckBox.setSelected(instance.defaultValue);
-        useJsonKeyNameCheckBox.setSelected(instance.useJsonKeyName);
+        createToJson.setSelected(instance.createToJson);
+        defaultValue.setSelected(instance.defaultValue);
+        useJsonKeyName.setSelected(instance.useJsonKeyName);
+        explicitToJson.setSelected(instance.explicitToJson);
+        fieldRename.setSelected(instance.fieldRename);
+        copyWith.setSelected(instance.copyWith);
 
 
-        createToJsonCheckBox.addItemListener(e -> {
+        createToJson.addItemListener(e -> {
             instance.createToJson = e.getStateChange() == ItemEvent.SELECTED;
             enableOkAction();
         });
-        defaultCheckBox.addItemListener(e -> {
+        defaultValue.addItemListener(e -> {
             instance.defaultValue = e.getStateChange() == ItemEvent.SELECTED;
             enableOkAction();
         });
-        useJsonKeyNameCheckBox.addItemListener(e -> {
+        useJsonKeyName.addItemListener(e -> {
             instance.useJsonKeyName = e.getStateChange() == ItemEvent.SELECTED;
+            enableOkAction();
+        });
+        explicitToJson.addItemListener(e -> {
+            instance.explicitToJson = e.getStateChange() == ItemEvent.SELECTED;
+            enableOkAction();
+        });
+        fieldRename.addItemListener(e -> {
+            instance.fieldRename = e.getStateChange() == ItemEvent.SELECTED;
+            enableOkAction();
+        });
+        copyWith.addItemListener(e -> {
+            instance.copyWith = e.getStateChange() == ItemEvent.SELECTED;
             enableOkAction();
         });
     }
@@ -106,7 +124,7 @@ public class InputJsonDialog extends DialogWrapper {
         getOKAction().setEnabled(true);
 
         FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
-        String generatorClassContent = JsonHelper.generateDartClassesToString(className, jsonText, instance.createToJson, instance.defaultValue, instance.useJsonKeyName);
+        String generatorClassContent = JsonHelper.generateDartClassesToString(className, jsonText, instance);
         mDartTextField.setText(generatorClassContent);
     }
 

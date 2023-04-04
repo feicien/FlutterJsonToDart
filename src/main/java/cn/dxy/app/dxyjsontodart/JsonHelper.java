@@ -1,5 +1,6 @@
 package cn.dxy.app.dxyjsontodart;
 
+import cn.dxy.app.dxyjsontodart.setting.FlutterJsonToDartSetting;
 import com.google.common.base.CaseFormat;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -16,7 +17,7 @@ public class JsonHelper {
      * @param className   用户输入的类名
      * @param originalStr 用户输入的 json
      */
-    public static String generateDartClassesToString(String className, String originalStr, boolean createToJson, boolean defaultValue, boolean useJsonKeyName) {
+    public static String generateDartClassesToString(String className, String originalStr, FlutterJsonToDartSetting setting) {
 
         Map<String, Map<String, Object>> map = new LinkedHashMap<>();
 
@@ -27,7 +28,7 @@ public class JsonHelper {
 
         //遍历找到的对象，一个对象生成一个模型
         for (Map.Entry<String, Map<String, Object>> stringMapEntry : map.entrySet()) {
-            String classContent = generateClassContent(stringMapEntry.getKey(), stringMapEntry.getValue(), createToJson, defaultValue, useJsonKeyName);
+            String classContent = generateClassContent(stringMapEntry.getKey(), stringMapEntry.getValue(), setting);
             sb.append(classContent);
         }
 
@@ -50,7 +51,7 @@ public class JsonHelper {
 
             for (Map.Entry<String, Object> entry : item.entrySet()) {
                 //首字母大写
-                String key = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.UPPER_CAMEL, entry.getKey());
+                String key = CaseFormat.LOWER_CAMEL.to(CaseFormat.UPPER_CAMEL, entry.getKey());
 
                 Object value = entry.getValue();
 
@@ -76,13 +77,34 @@ public class JsonHelper {
     /**
      * 根据 item 中的数据生成一个模型
      */
-    private static String generateClassContent(String fileName1, Map<String, Object> item, boolean createToJson, boolean defaultValue, boolean useJsonKeyName) {
+    private static String generateClassContent(String fileName1, Map<String, Object> item, FlutterJsonToDartSetting setting) {
+        boolean createToJson = setting.createToJson;
+        boolean defaultValue = setting.defaultValue;
+        boolean useJsonKeyName = setting.useJsonKeyName;
+        boolean explicitToJson = setting.explicitToJson;
+        boolean fieldRename = setting.fieldRename;
+        boolean copyWith = setting.copyWith;
 
         String fileName = StringUtils.getClassName(fileName1);
 
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\n@JsonSerializable()\nclass ").append(fileName).append(" {\n");
+        sb.append("\n@JsonSerializable(");
+        if (explicitToJson) {
+            sb.append("explicitToJson: true");
+            if (fieldRename) {
+                sb.append(", ");
+                sb.append("fieldRename: FieldRename.none");
+            }
+        } else {
+            if (fieldRename) {
+                sb.append("fieldRename: FieldRename.none");
+            }
+        }
+        sb.append(")");
+
+        sb.append("\nclass ");
+        sb.append(fileName).append(" {\n");
 
 
         for (Map.Entry<String, Object> entry : item.entrySet()) {
@@ -136,10 +158,44 @@ public class JsonHelper {
         }
 
         sb.append("  });\n\n");
+
+        // fromJson 方法
         sb.append("  factory ").append(fileName).append(".fromJson(Map<String, dynamic> json) =>\n      _$").append(fileName).append("FromJson(json);\n");
+
+        // toJson 方法
         if (createToJson) {
-            sb.append("\n  Map<String, dynamic> toJson() => _$").append(fileName).append("ToJson(this);\n");
+            sb.append("\n  ");
+            sb.append("Map<String, dynamic> toJson() => _$").append(fileName).append("ToJson(this);");
+            sb.append("\n");
         }
+
+        // copyWith 方法
+        if (copyWith) {
+            sb.append("\n  ");
+            sb.append(fileName).append(" copyWith({\n");
+
+            for (Map.Entry<String, Object> entry : item.entrySet()) {
+                String key = entry.getKey();
+                Object value = entry.getValue();
+                if (key.contains("_")) {
+                    key = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, entry.getKey());
+                }
+                String type = getObjectType(key, value, false);
+                sb.append("    ").append(type).append(" ").append(key).append(",\n");
+            }
+
+            sb.append("  }) {\n    return ").append(fileName).append("(\n");
+
+            for (Map.Entry<String, Object> entry : item.entrySet()) {
+                String key = entry.getKey();
+                if (key.contains("_")) {
+                    key = CaseFormat.LOWER_UNDERSCORE.to(CaseFormat.LOWER_CAMEL, entry.getKey());
+                }
+                sb.append("      ").append(key).append(": ").append(key).append(" ?? this.").append(key).append(",\n");
+            }
+            sb.append("    );\n  }\n");
+        }
+
         sb.append("}\n");
 
         return sb.toString();

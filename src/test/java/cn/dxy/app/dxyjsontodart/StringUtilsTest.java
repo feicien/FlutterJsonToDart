@@ -7,22 +7,26 @@ import static org.junit.Assert.assertEquals;
 public class StringUtilsTest {
 
     @Test
-    public void testName() {
-
+    public void testFileName() {
         String s1 = StringUtils.getFileName("hello_world");
         assertEquals(s1, "hello_world");
+    }
 
+    @Test
+    public void testClassName0() {
         String s2 = StringUtils.getClassName("hello_world");
         assertEquals(s2, "HelloWorld");
+    }
 
-        String s3 = StringUtils.toUpperCamel("hello_world");
-        assertEquals(s3, "HelloWorld");
+    @Test
+    public void testClassName1() {
+        String s2 = StringUtils.getClassName("orderInfo");
+        assertEquals(s2, "OrderInfo");
+    }
 
-        String s4 = StringUtils.toLowerCamel("hello_world");
-        assertEquals(s4, "helloWorld");
-
-        String s5 = StringUtils.toUpperCaseFirstOne("hello_world");
-        assertEquals(s5, "Hello_world");
-
+    @Test
+    public void testClassName2() {
+        String s2 = StringUtils.getClassName("OrderInfo");
+        assertEquals(s2, "OrderInfo");
     }
 }

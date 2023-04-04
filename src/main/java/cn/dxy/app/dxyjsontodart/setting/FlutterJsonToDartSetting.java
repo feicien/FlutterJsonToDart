@@ -17,6 +17,12 @@ public class FlutterJsonToDartSetting implements PersistentStateComponent<Flutte
     public boolean defaultValue = false;
     //是否设置 JsonKey.name
     public boolean useJsonKeyName = true;
+    // 是否设置 explicitToJson
+    public boolean explicitToJson = false;
+    //是否设置 fieldRename
+    public boolean fieldRename = false;
+    //是否生成 copyWith
+    public boolean copyWith = false;
 
 
     public static FlutterJsonToDartSetting getInstance() {
@@ -34,6 +40,9 @@ public class FlutterJsonToDartSetting implements PersistentStateComponent<Flutte
         this.createToJson = state.createToJson;
         this.defaultValue = state.defaultValue;
         this.useJsonKeyName = state.useJsonKeyName;
+        this.explicitToJson = state.explicitToJson;
+        this.fieldRename = state.fieldRename;
+        this.copyWith = state.copyWith;
     }
 
 
