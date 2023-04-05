@@ -9,7 +9,7 @@ plugins {
     id("java")
     // Kotlin support
     id("org.jetbrains.kotlin.jvm") version "1.7.21"
-    id("org.jetbrains.intellij") version "1.11.0"
+    id("org.jetbrains.intellij") version "1.13.3"
     id("org.jetbrains.changelog") version "2.0.0"
 }
 
@@ -55,8 +55,8 @@ tasks {
     }
 
     patchPluginXml {
-        sinceBuild.set("200.*")
-        untilBuild.set("300.*")
+        sinceBuild.set("203.*")
+        untilBuild.set("300")
 
         // Extract the <!-- Plugin description --> section from README.md and provide for the plugin's manifest
         pluginDescription.set(

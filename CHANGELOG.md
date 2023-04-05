@@ -2,16 +2,29 @@
 
 # FlutterJsonToDart Changelog
 
-## 1.1.0 - 2023-04-04
+## Unreleased
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## 1.1.1 - 2023-04-05
 
 ### Added
 - Option added explicitToJson: true
-- Option added fieldRename: FieldRename.none 
+- Option added fieldRename: FieldRename.none
 - Option added copyWith method
 
 ### Fixed
 - bug fixes
-
 
 ## 1.0.9 - 2023-01-09
 
