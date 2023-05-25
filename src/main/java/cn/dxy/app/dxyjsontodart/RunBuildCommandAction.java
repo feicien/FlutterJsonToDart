@@ -8,7 +8,7 @@ public class RunBuildCommandAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        CommandUtil.runBuildRunnerCommandBuild(event);
+        CommandUtil.runBuildRunnerCommandWatch(event, false);
     }
 
 }

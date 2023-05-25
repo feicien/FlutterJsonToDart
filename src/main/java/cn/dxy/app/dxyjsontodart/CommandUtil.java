@@ -1,5 +1,6 @@
 package cn.dxy.app.dxyjsontodart;
 
+import cn.dxy.app.dxyjsontodart.setting.FlutterJsonToDartSetting;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.project.Project;
@@ -15,6 +16,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,7 +27,29 @@ public class CommandUtil {
         Messages.showErrorDialog(message, "FlutterJsonToDart");
     }
 
-    public static void runFlutterPubRun(Project project) {
+    public static void runFlutterPubRun(@NotNull AnActionEvent event) {
+        List<String> commands = new ArrayList<>();
+
+        String command = getDependencyCommand(event);
+        if (command != null) {
+            commands.add(command);
+        }
+
+        FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
+        boolean runBuilderRunner = instance.runBuilderRunner;
+
+        if (runBuilderRunner) {
+            commands.add(getBuildRunnerCommand(false));
+        }
+
+        executeCommand(event, commands);
+    }
+
+    private static void executeCommand(@NotNull AnActionEvent event, List<String> commands) {
+        Project project = event.getData(PlatformDataKeys.PROJECT);
+        if (project == null) {
+            return;
+        }
 
         String workingDirectory = project.getBasePath();
 
@@ -36,12 +60,43 @@ public class CommandUtil {
             return;
         }
 
+        ShellTerminalWidget terminalWidget = terminalView.createLocalShellWidget(workingDirectory, "Local");
+
+        for (String command : commands) {
+            try {
+                terminalWidget.executeCommand(command);
+            } catch (IOException exception) {
+                showInfo("Cannot run command:" + command + "  " + exception.getMessage());
+            }
+        }
+    }
+
+
+    public static void runBuildRunnerCommandWatch(@NotNull AnActionEvent event, boolean isWatch) {
+        List<String> commands = new ArrayList<>();
+        commands.add(getBuildRunnerCommand(isWatch));
+
+        executeCommand(event, commands);
+    }
+
+    private static String getBuildRunnerCommand(boolean isWatch) {
+        FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
+        boolean supportFvm = instance.supportFvm;
+        return (supportFvm ? "fvm " : "") + "dart run build_runner " + (isWatch ? "watch" : "build") + " --delete-conflicting-outputs";
+    }
+
+    private static String getDependencyCommand(@NotNull AnActionEvent event) {
         //判断是 pubspec.yaml 文件中是否已经添加了 json_annotation 、json_serializable、build_runner 依赖
         boolean hasJsonAnnotation = false;
         boolean hasJsonSerializable = false;
         boolean hasBuildRunner = false;
 
         try {
+            Project project = event.getData(PlatformDataKeys.PROJECT);
+            if (project == null) {
+                return null;
+            }
+            String workingDirectory = project.getBasePath();
             File file = new File(workingDirectory, "pubspec.yaml");
             String yaml = Files.readString(Path.of(file.getPath()));
             List<FlutterDependencyBean> dependencies = YamlUtils.getDependencies(yaml);
@@ -60,51 +115,32 @@ public class CommandUtil {
         } catch (Exception ignored) {
         }
 
-
-        ShellTerminalWidget terminalWidget = terminalView.createLocalShellWidget(workingDirectory, "Local");
-        executeCommand(terminalWidget, hasJsonAnnotation, "dart pub add json_annotation");
-        executeCommand(terminalWidget, hasJsonSerializable, "dart pub add json_serializable --dev");
-        executeCommand(terminalWidget, hasBuildRunner, "dart pub add build_runner --dev");
-        executeCommand(terminalWidget, false, "flutter pub run build_runner build --delete-conflicting-outputs");
-    }
-
-    private static void executeCommand(ShellTerminalWidget terminalWidget, boolean hasAddDependency, String command) {
-        if (hasAddDependency) {
-            return;
-        }
-        try {
-            terminalWidget.executeCommand(command);
-        } catch (IOException exception) {
-            showInfo("Cannot run command:" + command + "  " + exception.getMessage());
-        }
-    }
-
-    public static void runBuildRunnerCommandBuild(@NotNull AnActionEvent event) {
-        String command = "flutter pub run build_runner build --delete-conflicting-outputs";
-        runBuildRunnerCommand(event, command);
-    }
-
-    public static void runBuildRunnerCommandWatch(@NotNull AnActionEvent event) {
-        String command = "flutter pub run build_runner watch --delete-conflicting-outputs";
-        runBuildRunnerCommand(event, command);
-    }
-
-    public static void runBuildRunnerCommand(@NotNull AnActionEvent event, String command) {
-        Project project = event.getData(PlatformDataKeys.PROJECT);
-        if (project == null) {
-            return;
+        if (hasJsonAnnotation && hasJsonSerializable && hasBuildRunner) {
+            return null;
         }
 
-        String workingDirectory = project.getBasePath();
+        FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
+        boolean supportFvm = instance.supportFvm;
 
-        TerminalView terminalView = TerminalView.getInstance(project);
-        ToolWindow window = ToolWindowManager.getInstance(project).getToolWindow(TerminalToolWindowFactory.TOOL_WINDOW_ID);
-        if (window == null) {
-            showInfo("Please check that the following two plugins are installed: Terminal and Shell Script");
-            return;
+        StringBuilder sb = new StringBuilder();
+
+        if (supportFvm) {
+            sb.append("fvm ");
+        }
+        sb.append("dart pub add");
+
+        if (!hasJsonAnnotation) {
+            sb.append(" json_annotation");
+        }
+        if (!hasJsonSerializable) {
+            sb.append(" dev:json_serializable");
         }
 
-        ShellTerminalWidget terminalWidget = terminalView.createLocalShellWidget(workingDirectory, "Local");
-        executeCommand(terminalWidget, false, command);
+        if (!hasBuildRunner) {
+            sb.append(" dev:build_runner");
+        }
+
+        return sb.toString();
     }
+
 }

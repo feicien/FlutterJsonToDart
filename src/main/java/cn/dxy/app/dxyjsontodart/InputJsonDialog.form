@@ -19,13 +19,15 @@
       <splitpane id="44292" binding="jSplitPane">
         <constraints>
           <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false">
-            <preferred-size width="400" height="500"/>
+            <preferred-size width="800" height="500"/>
           </grid>
         </constraints>
         <properties>
-          <dividerLocation value="300"/>
-          <dividerSize value="1"/>
+          <dividerLocation value="400"/>
+          <dividerSize value="10"/>
           <foreground color="-1315861"/>
+          <oneTouchExpandable value="false"/>
+          <opaque value="true"/>
         </properties>
         <border type="none"/>
         <children>
@@ -33,7 +35,9 @@
             <constraints>
               <splitpane position="left"/>
             </constraints>
-            <properties/>
+            <properties>
+              <viewer value="true"/>
+            </properties>
           </component>
           <component id="2197" class="com.intellij.ui.LanguageTextField" binding="mDartTextField" custom-create="true">
             <constraints>
@@ -45,7 +49,7 @@
           </component>
         </children>
       </splitpane>
-      <grid id="b90c9" layout-manager="GridLayoutManager" row-count="2" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+      <grid id="b90c9" layout-manager="GridLayoutManager" row-count="3" column-count="3" same-size-horizontally="true" same-size-vertically="false" hgap="-1" vgap="-1">
         <margin top="0" left="0" bottom="0" right="0"/>
         <constraints>
           <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
@@ -53,50 +57,66 @@
         <properties/>
         <border type="none"/>
         <children>
+          <component id="1eefd" class="javax.swing.JCheckBox" binding="runBuildRunner">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="runBuildRunner"/>
+            </properties>
+          </component>
+          <component id="23eeb" class="javax.swing.JCheckBox" binding="fieldRename">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="fieldRename"/>
+            </properties>
+          </component>
+          <component id="676a6" class="javax.swing.JCheckBox" binding="defaultValue">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="default value"/>
+            </properties>
+          </component>
+          <component id="30ae9" class="javax.swing.JCheckBox" binding="explicitToJson">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="explicitToJson"/>
+            </properties>
+          </component>
           <component id="e7599" class="javax.swing.JCheckBox" binding="createToJson">
             <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <selected value="false"/>
               <text value="createToJson"/>
             </properties>
           </component>
-          <component id="676a6" class="javax.swing.JCheckBox" binding="defaultValue">
+          <component id="ffb98" class="javax.swing.JCheckBox" binding="supportFvm">
             <constraints>
-              <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
-              <text value="default value"/>
+              <text value="support Fvm"/>
             </properties>
           </component>
           <component id="d3b71" class="javax.swing.JCheckBox" binding="useJsonKeyName">
             <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="use JsonKey.name"/>
             </properties>
           </component>
-          <component id="30ae9" class="javax.swing.JCheckBox" binding="explicitToJson">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="explicitToJson"/>
-            </properties>
-          </component>
-          <component id="23eeb" class="javax.swing.JCheckBox" binding="fieldRename">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="fieldRename"/>
-            </properties>
-          </component>
           <component id="8d8c3" class="javax.swing.JCheckBox" binding="copyWith">
             <constraints>
-              <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
             </constraints>
             <properties>
               <text value="copyWith"/>

@@ -28,6 +28,8 @@ public class InputJsonDialog extends DialogWrapper {
     private JCheckBox explicitToJson;
     private JCheckBox fieldRename;
     private JCheckBox copyWith;
+    private JCheckBox runBuildRunner;
+    private JCheckBox supportFvm;
 
 
     public InputJsonDialog(Project project) {
@@ -55,6 +57,8 @@ public class InputJsonDialog extends DialogWrapper {
         });
 
         FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
+        supportFvm.setSelected(instance.supportFvm);
+        runBuildRunner.setSelected(instance.runBuilderRunner);
         createToJson.setSelected(instance.createToJson);
         defaultValue.setSelected(instance.defaultValue);
         useJsonKeyName.setSelected(instance.useJsonKeyName);
@@ -63,6 +67,12 @@ public class InputJsonDialog extends DialogWrapper {
         copyWith.setSelected(instance.copyWith);
 
 
+        supportFvm.addItemListener(e -> {
+            instance.supportFvm = e.getStateChange() == ItemEvent.SELECTED;
+        });
+        runBuildRunner.addItemListener(e -> {
+            instance.runBuilderRunner = e.getStateChange() == ItemEvent.SELECTED;
+        });
         createToJson.addItemListener(e -> {
             instance.createToJson = e.getStateChange() == ItemEvent.SELECTED;
             enableOkAction();

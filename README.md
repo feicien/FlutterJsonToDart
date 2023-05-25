@@ -17,13 +17,15 @@ The plugin can help you generate dart model needed for json_serializable from a 
 
 一个可以自动把 `JSON` 解析为 `Dart` 模型类的 `Android Studio` 插件。
 
-它采用的是官方推荐的 `json_serializable` 方案（[点击查看官方文档](https://docs.flutter.dev/development/data-and-backend/json)）
+它采用的是官方推荐的 `json_serializable` 方案，具体使用可以参考这篇博客[Flutter json_serializable 解析 JSON 使用详解](https://juejin.cn/post/7175793535081529402)
 
 可以帮助 Flutter 开发者自动生成带 `@JsonSerializable` 注解的模型类；
 
 自动在 `pubspec.yaml` 文件中添加依赖；
 
 自动执行解析生成命令：`flutter pub run build_runner build `
+
+本插件介绍，请查看这篇文章：https://juejin.cn/post/7114142706557075487
 
 ### 安装
 

@@ -63,7 +63,7 @@ public class FlutterJsonToDartAction extends AnAction {
         showNotify(project, "Dart Data Class file generated successful");
 
         // 添加 json_serializable 依赖，并执行相关命令
-        CommandUtil.runFlutterPubRun(project);
+        CommandUtil.runFlutterPubRun(event);
 
     }
 
