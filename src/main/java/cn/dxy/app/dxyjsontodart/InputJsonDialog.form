@@ -35,9 +35,7 @@
             <constraints>
               <splitpane position="left"/>
             </constraints>
-            <properties>
-              <viewer value="true"/>
-            </properties>
+            <properties/>
           </component>
           <component id="2197" class="com.intellij.ui.LanguageTextField" binding="mDartTextField" custom-create="true">
             <constraints>
