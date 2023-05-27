@@ -16,11 +16,14 @@
 
 ### Security
 
-## 1.1.2 - 2023-05-25 
+## 1.1.3 - 2023-05-27
 
 ### Added
 - support fvm
+- add two action in Build menu related to fvm 
 
+### Fixed
+- fix json text field is read-only
 
 ## 1.1.1 - 2023-04-05
 

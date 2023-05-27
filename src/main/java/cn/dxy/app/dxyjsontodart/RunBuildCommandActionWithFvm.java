@@ -4,11 +4,11 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class RunBuildCommandAction extends AnAction {
+public class RunBuildCommandActionWithFvm extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent event) {
-        CommandUtil.runBuildRunnerCommandWatch(event, false, false);
+        CommandUtil.runBuildRunnerCommandWatch(event, true, false);
     }
 
 }

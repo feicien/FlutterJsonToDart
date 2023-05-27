@@ -39,7 +39,8 @@ public class CommandUtil {
         boolean runBuilderRunner = instance.runBuilderRunner;
 
         if (runBuilderRunner) {
-            commands.add(getBuildRunnerCommand(false));
+            boolean supportFvm = instance.supportFvm;
+            commands.add(getBuildRunnerCommand(supportFvm, false));
         }
 
         executeCommand(event, commands);
@@ -72,16 +73,14 @@ public class CommandUtil {
     }
 
 
-    public static void runBuildRunnerCommandWatch(@NotNull AnActionEvent event, boolean isWatch) {
+    public static void runBuildRunnerCommandWatch(@NotNull AnActionEvent event, boolean supportFvm, boolean isWatch) {
         List<String> commands = new ArrayList<>();
-        commands.add(getBuildRunnerCommand(isWatch));
+        commands.add(getBuildRunnerCommand(supportFvm, isWatch));
 
         executeCommand(event, commands);
     }
 
-    private static String getBuildRunnerCommand(boolean isWatch) {
-        FlutterJsonToDartSetting instance = FlutterJsonToDartSetting.getInstance();
-        boolean supportFvm = instance.supportFvm;
+    private static String getBuildRunnerCommand(boolean supportFvm, boolean isWatch) {
         return (supportFvm ? "fvm " : "") + "dart run build_runner " + (isWatch ? "watch" : "build") + " --delete-conflicting-outputs";
     }
 

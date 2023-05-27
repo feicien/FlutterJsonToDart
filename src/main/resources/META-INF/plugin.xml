@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>cn.dxy.app.DxyJsonToDart</id>
     <name>FlutterJsonToDart</name>
-    <vendor email="chengh@dxy.cn" url="https://app.dxy.cn">DXY</vendor>
+    <vendor email="ithcheng@gmail.com" url="https://juejin.cn/user/1090369410314942">灰尘大哥</vendor>
 
 
     <!-- Product and plugin compatibility requirements.
@@ -26,16 +26,28 @@
 
         <action id="FlutterJsonToDart.RunBuildCommand" class="cn.dxy.app.dxyjsontodart.RunBuildCommandAction"
                 text="Run 'Build Runner Build' Command"
-                description="Run 'flutter pub run build_runner build --delete-conflicting-outputs' command">
+                description="Run 'dart run build_runner build --delete-conflicting-outputs' command">
             <add-to-group group-id="BuildMenu" anchor="first"/>
             <keyboard-shortcut keymap="$default" first-keystroke="alt b"/>
         </action>
 
         <action id="FlutterJsonToDart.RunWatchCommand" class="cn.dxy.app.dxyjsontodart.RunWatchCommandAction"
                 text="Run 'Build Runner Watch' Command"
-                description="Run 'flutter pub run build_runner watch --delete-conflicting-outputs' command">
+                description="Run 'dart run build_runner watch --delete-conflicting-outputs' command">
             <add-to-group group-id="BuildMenu" anchor="after" relative-to-action="FlutterJsonToDart.RunBuildCommand"/>
             <keyboard-shortcut keymap="$default" first-keystroke="alt w"/>
+        </action>
+
+        <action id="FlutterJsonToDart.RunBuildCommandWithFvm" class="cn.dxy.app.dxyjsontodart.RunBuildCommandActionWithFvm"
+                text="Run 'fvm Build Runner Build' Command"
+                description="Run 'fvm dart run build_runner build --delete-conflicting-outputs' command">
+            <add-to-group group-id="BuildMenu" anchor="after" relative-to-action="FlutterJsonToDart.RunWatchCommand"/>
+        </action>
+
+        <action id="FlutterJsonToDart.RunWatchCommandWithFvm" class="cn.dxy.app.dxyjsontodart.RunWatchCommandActionWithFvm"
+                text="Run 'fvm Build Runner Watch' Command"
+                description="Run 'fvm dart run build_runner watch --delete-conflicting-outputs' command">
+            <add-to-group group-id="BuildMenu" anchor="after" relative-to-action="FlutterJsonToDart.RunBuildCommandWithFvm"/>
         </action>
 
     </actions>
